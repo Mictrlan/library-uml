@@ -5,7 +5,6 @@ import (
 	"errors"
 	"log"
 	"net/http"
-	"time"
 
 	mysql "github.com/Mictrlan/library/books/model/mysql"
 	"github.com/gin-gonic/gin"
@@ -39,7 +38,7 @@ func (bc *BooksController) Register(r gin.IRouter) error {
 		log.Fatal(err)
 	}
 
-	r.POST("api/v2/books/create", bc.booksadd)
+	r.POST("api/v2/books/booksadd", bc.booksadd)
 	r.POST("api/v2/books/bookQueryByID", bc.booksInquireByID)
 	r.POST("api/v2/books/bookQueryByISBN", bc.booksInquireByISBN)
 	r.POST("api/v2/books/bookQueryByTitle", bc.booksInquireByTitle)
@@ -53,12 +52,12 @@ func (bc *BooksController) Register(r gin.IRouter) error {
 func (bc *BooksController) booksadd(ctx *gin.Context) {
 	var (
 		req struct {
-			Title    string    `json:"title"`
-			ISBN     string    `json:"ISBN"`
-			Author   string    `json:"author"`
-			Duration time.Time `json:"duration"`
-			Total    int       `json:"total"`
-			Ebook    bool      `json:"Ebook"`
+			Title    string `json:"title"`
+			ISBN     string `json:"ISBN"`
+			Author   string `json:"author"`
+			Duration string `json:"duration"`
+			Total    int    `json:"total"`
+			Ebook    bool   `json:"Ebook"`
 		}
 	)
 

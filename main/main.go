@@ -19,4 +19,6 @@ func main() {
 
 	booksCon := books.New(dbConn)
 	booksCon.Register(router)
+
+	router.Run(":8080")
 }

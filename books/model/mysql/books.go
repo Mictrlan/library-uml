@@ -3,7 +3,6 @@ package model
 import (
 	"database/sql"
 	"errors"
-	"time"
 )
 
 const (
@@ -39,7 +38,7 @@ var (
 			title              VARCHAR(50) NOT NULL,
 			ISBN               VARCHAR(50) UNIQUE NOT NULL,
 			author             VARCHAR(50) NOT NULL,
-			duration           DATETIME NOT NULL,
+			duration           VARCHAR(50) NOT NULL,
 			startdate          DATETIME DEFAULT '9102-6-15 00:00:00', 
 			enddate            DATETIME DEFAULT '9102-6-15 00:00:00', 
 			total              INT NOT NULL,
@@ -66,7 +65,7 @@ func BooksCreateTable(db *sql.DB) error {
 }
 
 // BooksAddInfo insert new book info
-func BooksAddInfo(db *sql.DB, title, ISBN, author string, total int, duration time.Time, Ebook bool) (int64, error) {
+func BooksAddInfo(db *sql.DB, title, ISBN, author string, total int, duration string, Ebook bool) (int64, error) {
 	result, err := db.Exec(booksSQLString[mysqlBooksInsertBook], title, ISBN, author, duration, total, Ebook)
 	if err != nil {
 		return 0, err
