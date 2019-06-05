@@ -39,17 +39,15 @@ var (
 			title              VARCHAR(50) NOT NULL,
 			ISBN               VARCHAR(50) UNIQUE NOT NULL,
 			author             VARCHAR(50) NOT NULL,
-			publishingHouse    VARCHAR(50),
 			duration           DATETIME NOT NULL,
-			startdate          DATETIME DEFAULT '0000-00-00 00:00:00', 
-			enddate            DATETIME DEFAULT '0000-00-00 00:00:00', 
+			startdate          DATETIME DEFAULT '9102-6-15 00:00:00', 
+			enddate            DATETIME DEFAULT '9102-6-15 00:00:00', 
 			total              INT NOT NULL,
 			outCount           INT NOT NULL DEFAULT 0,
 			inCount            INT NOT NULL DEFAULT 0,
-			Ebook              BOOLEAN DEFAULT TRUE
-			PRIMARY KEY (id),
-			UNIQUE KEY ISBN(ISBN),
-		),ENGINE=InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='books information'`,
+			Ebook              BOOLEAN DEFAULT TRUE,
+			PRIMARY KEY (id)
+		)ENGINE=InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='books information'`,
 		`INSERT INTO books (title,ISBN,author,duration,total,Ebook)VALUES(?,?,?,?,?,?)`, // duration
 		`SELECT title,ISBN,author,inCount,Ebook FROM books WHERE id = ? LOCK IN SHARE MODE`,
 		`SELECT title,ISBN,author,inCount,Ebook FROM books WHERE ISBN = ? LOCK IN SHARE MODE`,
@@ -61,8 +59,8 @@ var (
 	}
 )
 
-// CreateBooksTable create books table
-func CreateBooksTable(db *sql.DB) error {
+// BooksCreateTable create books table
+func BooksCreateTable(db *sql.DB) error {
 	_, err := db.Exec(booksSQLString[mysqlBooksCreateBooksTable])
 	return err
 }
