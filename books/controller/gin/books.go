@@ -44,6 +44,7 @@ func (bc *BooksController) Register(r gin.IRouter) error {
 	r.POST("api/v2/books/bookQueryByTitle", bc.booksInquireByTitle)
 	r.POST("api/v2/books/bookQueryByAuthor", bc.booksInquireByAuthor)
 	r.POST("api/v2/books/booksUpdateTotalByISBN", bc.booksUpdateTotal)
+	r.POST("api/v2/books/booksUpdateCountByISBN", bc.booksUpdateCountByISBN)
 	r.POST("api/v2/books/booksDeleteByISBN", bc.booksDeleteByISBN)
 
 	return nil
@@ -68,7 +69,7 @@ func (bc *BooksController) booksadd(ctx *gin.Context) {
 		return
 	}
 
-	id, err := mysql.BooksAddInfo(bc.db, req.Title, req.ISBN, req.Author, req.Total, req.Duration, req.Ebook)
+	id, err := mysql.BooksAddInfo(bc.db, req.Title, req.ISBN, req.Author, req.Total, req.Total, req.Duration, req.Ebook)
 	if err != nil {
 		ctx.Error(err)
 		ctx.JSON(http.StatusPreconditionFailed, gin.H{"status": http.StatusPreconditionFailed})
@@ -216,6 +217,45 @@ func (bc *BooksController) booksUpdateTotal(ctx *gin.Context) {
 	if err != nil {
 		ctx.Error(err)
 		ctx.JSON(http.StatusPreconditionFailed, gin.H{"status": http.StatusPreconditionFailed})
+		return
+	}
+
+	err = mysql.BooksUpdateInCountByISBN(bc.db, req.Value, req.ISBN)
+	if err != nil {
+		ctx.Error(err)
+		ctx.JSON(http.StatusPreconditionRequired, gin.H{"status": http.StatusPreconditionRequired})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"status": http.StatusOK})
+}
+
+func (bc *BooksController) booksUpdateCountByISBN(ctx *gin.Context) {
+	var (
+		req struct {
+			Value int    `json:"OutCount"`
+			ISBN  string `json:"ISBN"`
+		}
+	)
+
+	err := ctx.ShouldBind(&req)
+	if err != nil {
+		ctx.Error(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"status": http.StatusBadRequest})
+		return
+	}
+
+	err = mysql.BooksUpdateOutCountByISBN(bc.db, req.Value, req.ISBN)
+	if err != nil {
+		ctx.Error(err)
+		ctx.JSON(http.StatusPreconditionFailed, gin.H{"status": http.StatusPreconditionFailed})
+		return
+	}
+
+	err = mysql.BooksUpdateInCountReduce(bc.db, req.Value, req.ISBN)
+	if err != nil {
+		ctx.Error(err)
+		ctx.JSON(http.StatusPreconditionRequired, gin.H{"status": http.StatusPreconditionRequired})
 		return
 	}
 
